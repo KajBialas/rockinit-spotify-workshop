@@ -5,10 +5,15 @@ const API = '/assets/api.json';
 function App() {
   const [songs, setSongs] = useState([]);
   const [selectedSong, setSelectedSong] = useState(0);
-  // const audioRef = useRef();
+  const audioRef = useRef();
 
-  // Zadanie 2 - podpiąć referencje pod player oraz przyciskami play pause uruchamiać muzyke
-  //audioRef.current.play()
+
+  useEffect(() => {
+      if(audioRef.current) {
+          audioRef.current.src = songs[selectedSong].audio
+          audioRef.current.load();
+      }
+  }, [selectedSong, songs])
 
     useEffect(() => {
         fetch(API).then(response => {
@@ -23,19 +28,19 @@ function App() {
         return (<div>Loader...</div>)
     }
   return (
-    <>
+    <div>
         <section>
             <h1 className="text-3xl font-bold mb-4">
                 Spotify
             </h1>
             <img src={songs[selectedSong].cover} />
-            <button>
+            <button onClick={() => audioRef.current.play()}>
                 Play
             </button>
-            <button>
+            <button onClick={() => audioRef.current.pause()}>
                 Pause
             </button>
-            <audio>
+            <audio ref={audioRef}>
                 <source src={songs[selectedSong].audio} />
             </audio>
         </section>
@@ -51,7 +56,7 @@ function App() {
               ))}
           </ul>
       </section>
-    </>
+    </div>
   )
 }
 
